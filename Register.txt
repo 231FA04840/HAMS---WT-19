@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hospital Appointment – Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e6f7ff; /* Soft pastel hospital theme */
+      padding: 20px;
+      background-image: url('https://www.shutterstock.com/image-photo/stethoscope-on-white-blank-calendar-600nw-2501558353.jpg'); /* Optional subtle hospital background */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* Container */
+    .register-container {
+  background: rgba(255, 255, 255, 0.25); /* Make container more transparent */
+  backdrop-filter: blur(10px);           /* Blur effect for glass look */
+  padding: 45px 35px;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15); /* Slight shadow for depth */
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional: subtle border for glass effect */
+}
+
+/* Optional: make inputs slightly transparent too */
+.register-container input,
+.register-container select,
+.register-container button {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+.register-container input:focus,
+.register-container select:focus {
+  background: rgba(255,255,255,0.8);
+  border-color: #4da6ff;
+  box-shadow: 0 0 12px rgba(77,166,255,0.3);
+}
+
+    /* Hospital Icon/Image */
+    .hospital-image {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+    }
+
+    .register-container h2 {
+      font-size: 30px;
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .register-container .subtitle {
+      color: #555;
+      font-size: 15px;
+      margin-bottom: 28px;
+    }
+
+    /* Form Inputs */
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 12px;
+      border: 2px solid #e2e2e2;
+      border-radius: 12px;
+      background: #fafafa;
+      font-size: 16px;
+      transition: all 0.25s ease;
+    }
+
+    .input-group input:focus {
+      border-color: #4da6ff;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(77,166,255,0.3);
+      outline: none;
+    }
+
+    /* Register Button */
+    .btn-register {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg,#4da6ff,#80cfff);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn-register:hover {
+      background: linear-gradient(135deg,#80cfff,#4da6ff);
+      box-shadow: 0 8px 18px rgba(77,166,255,0.35);
+      transform: translateY(-2px);
+    }
+
+    /* Link to Login */
+    .login-link {
+      margin-top: 22px;
+      font-size: 15px;
+      color:#444;
+    }
+
+    .login-link a {
+      color: #4da6ff;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.25s;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px);}
+      to   { opacity: 1; transform: translateY(0);}
+    }
+
+    /* Mobile Friendly */
+    @media (max-width: 480px) {
+      .register-container {
+        padding: 35px 25px;
+      }
+      .register-container h2 {
+        font-size: 26px;
+      }
+      .btn-register {
+        font-size: 16px;
+      }
+      .hospital-image {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="register-container">
+    <!-- Hospital Image -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc70n-qU8aF0_hOxbo5kqZFCct-41Lraq_fA&s" alt="Hospital Icon" class="hospital-image">
+
+    <h2>Create an Account</h2>
+    <p class="subtitle">Register to book hospital appointments easily</p>
+
+    <form action="login.html" method="GET"> <!-- Change to POST/backend later -->
+      <div class="input-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="input-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a password" required>
+      </div>
+
+      <button type="submit" class="btn-register">Register</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+
+</body>
+</html>

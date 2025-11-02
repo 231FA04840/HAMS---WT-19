@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hospital Appointment Booking</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* ===== Global Reset & Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('https://plus.unsplash.com/premium_photo-1673953510197-0950d951c6d9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGRvY3RvciUyMGFwcG9pbnRtZW50fGVufDB8fDB8fHww') no-repeat center center/cover;
+  padding: 30px;
+}
+
+/* ===== Container (Glassmorphic Card) ===== */
+.container {
+  background: rgba(255, 255, 255, 0.25);   
+  backdrop-filter: blur(12px) saturate(180%); 
+  -webkit-backdrop-filter: blur(12px) saturate(180%); 
+  padding: 45px 35px;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 25px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); 
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3); }
+
+/* ===== Heading ===== */
+.container h2 {
+  font-size: 30px;
+  color: #003f5c;
+  margin-bottom: 30px;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* ===== Inputs & Selects ===== */
+.container input,
+.container select {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  border: 1px solid #a0d4ff;
+  border-radius: 15px;
+  font-size: 16px;
+  background: rgba(255,255,255,0.95);
+  transition: all 0.3s ease;
+}
+
+.container input:focus,
+.container select:focus {
+  border-color: #4da6ff;
+  box-shadow: 0 0 12px rgba(77, 166, 255, 0.4);
+  outline: none;
+  background: #ffffff;
+}
+
+/* ===== Button ===== */
+.container button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #2b90ff, #4da6ff);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.container button:hover {
+  background: linear-gradient(135deg, #4da6ff, #2b90ff);
+  box-shadow: 0 10px 25px rgba(77, 166, 255, 0.5);
+  transform: translateY(-3px);
+}
+
+/* ===== Smooth Animation ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 500px) {
+  .container {
+    padding: 35px 20px;
+  }
+  .container h2 {
+    font-size: 26px;
+  }
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Book Your Appointment</h2>
+  <form id="appointmentForm">
+    <input type="text" name="name" placeholder="Patient Name" required>
+    <input type="tel" name="phone" placeholder="Phone Number" required>
+    <input type="date" name="date" required>
+    <input type="time" name="time" required>
+
+    <select id="city" name="city" required>
+      <option value="">-- Select City --</option>
+      <option value="Tenali">Tenali</option>
+      <option value="Guntur">Guntur</option>
+    </select>
+
+    <select id="hospital" name="hospital" required>
+      <option value="">-- Select Hospital --</option>
+    </select>
+
+    <button type="submit">Book Appointment</button>
+  </form>
+</div>
+
+<script>
+// Fetch hospitals dynamically based on city
+document.getElementById('city').addEventListener('change', function() {
+  const city = this.value;
+  const hospitalSelect = document.getElementById('hospital');
+  hospitalSelect.innerHTML = '<option>Loading...</option>';
+
+  fetch(`/api/hospitals?city=${city}`)  // API endpoint
+    .then(res => res.json())
+    .then(data => {
+      hospitalSelect.innerHTML = '<option value="">-- Select Hospital --</option>';
+      data.forEach(h => {
+        const option = document.createElement('option');
+        option.value = h.name;
+        option.textContent = h.name;
+        hospitalSelect.appendChild(option);
+      });
+    });
+});
+
+// Submit form to backend
+document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const appointment = Object.fromEntries(formData.entries());
+
+  fetch('/api/book-appointment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(appointment)
+  }).then(res => res.json())
+    .then(data => alert(data.message));
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hospital Directory — Tenali & Guntur</title>
+  <style>
+    :root{
+      --primary:#0072ff;
+      --accent:#00c6ff;
+      --glass: rgba(255,255,255,0.86);
+      --muted:#6b7280;
+      --card-shadow: 0 12px 30px rgba(2,6,23,0.12);
+      --card-shadow-hover: 0 20px 45px rgba(2,6,23,0.18);
+      --radius:14px;
+      --maxwidth:1180px;
+      --gap:18px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg,#e6f7ff 0%, #f8fbff 60%);
+      color:#092034;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:60px;
+    }
+
+    header{
+      background: linear-gradient(90deg,var(--primary),var(--accent));
+      color:white;padding:18px 6%;position:sticky;top:0;z-index:30;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.12);
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--primary));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+    .brand h1{font-size:1.1rem;margin:0}
+    nav a{color:rgba(255,255,255,0.95);text-decoration:none;margin-left:16px;font-weight:700}
+    nav a:hover{text-decoration:underline;opacity:0.95}
+
+    /* Hero */
+    .hero{
+      display:flex;align-items:center;justify-content:center;padding:44px 6px 28px;
+      background: url('https://images.unsplash.com/photo-1580281657525-6c5dfba7bb35?q=80&w=1900&auto=format&fit=crop') center/cover no-repeat;
+      position:relative;
+    }
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(2,6,23,0.40), rgba(2,6,23,0.15));}
+    .hero-card{
+      position:relative;z-index:2; width:min(var(--maxwidth),96%); display:flex;gap:22px;
+      background:var(--glass); border-radius:16px; padding:26px; box-shadow:var(--card-shadow);
+      align-items:center; justify-content:space-between;
+    }
+    .hero-left{max-width:65%}
+    .hero-left h2{color:var(--primary);font-size:1.9rem;margin-bottom:10px}
+    .hero-left p{color:var(--muted);line-height:1.6;margin-bottom:14px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;padding:10px 16px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+    .btn.alt{background:#fff;color:var(--primary);border:2px solid rgba(7,89,168,0.08)}
+
+    .hero-right{min-width:260px;background:linear-gradient(180deg,#ffffff,#f5fbff);padding:12px;border-radius:10px}
+    .quick-item{display:flex;justify-content:space-between;padding:8px 6px;border-bottom:1px dashed rgba(2,6,23,0.04);color:var(--muted);font-size:0.94rem}
+    .quick-item:last-child{border-bottom:0}
+
+    /* filters */
+    .filters{width:min(var(--maxwidth),96%);margin:26px auto 0;display:flex;gap:14px;align-items:center;padding:6px 12px}
+    .tabs{display:flex;gap:10px;background:transparent}
+    .tab{padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.9);cursor:pointer;border:1px solid rgba(2,6,23,0.03);font-weight:700}
+    .tab.active{box-shadow:0 10px 28px rgba(2,6,23,0.06);transform:translateY(-2px)}
+    .search{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .search input, .select{
+      padding:10px 12px;border-radius:10px;border:1px solid rgba(2,6,23,0.06);width:240px;background:white
+    }
+    .select{width:220px}
+
+    .section{width:min(var(--maxwidth),96%);margin:28px auto;padding:6px 6%}
+    .section-title{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px;gap:12px}
+    .section-title h3{color:var(--primary);margin:0;font-size:1.2rem}
+    .section-title p{color:var(--muted);font-size:0.95rem;margin:0}
+
+    .city-block{margin-top:18px}
+    .city-label{font-weight:800;color:#08385f;margin-bottom:8px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--gap)}
+
+    .card{background:#fff;border-radius:12px;padding:14px;border:1px solid rgba(2,6,23,0.03);box-shadow:var(--card-shadow);transition:transform .25s,box-shadow .25s}
+    .card:hover{transform:translateY(-8px);box-shadow:var(--card-shadow-hover)}
+    .card h4{margin:0 0 6px;color:#043a6b;font-size:1rem}
+    .meta{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:0.88rem;margin-bottom:8px}
+    .badge{background:linear-gradient(90deg,#ffd54a,#ffb74d);color:#111;padding:6px 8px;border-radius:8px;font-weight:700;font-size:0.82rem}
+    .spec{color:#06529b;font-weight:700;margin-bottom:6px;font-size:0.95rem}
+    .address{color:var(--muted);font-size:0.9rem;margin-bottom:8px}
+    .note{font-size:0.9rem;color:#374151;line-height:1.45;margin-bottom:12px}
+    .actions{display:flex;gap:8px}
+    .link-btn{padding:8px 10px;border-radius:9px;border:1px solid rgba(2,6,23,0.06);background:#fff;color:var(--primary);font-weight:700;text-decoration:none;font-size:0.9rem}
+    .link-btn.call{color:#0b6623;border-color:rgba(11,102,35,0.08)}
+
+    footer{margin-top:28px;padding:20px 6%;text-align:center;color:white;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:6px}
+    /* small */
+    @media (max-width:880px){
+      .hero-card{flex-direction:column;align-items:stretch}
+      .hero-left{max-width:100%}
+      .hero-right{min-width:unset}
+      .search input{width:160px}
+    }
+    @media (max-width:520px){
+      .search input, .select{width:120px;font-size:0.88rem}
+      .hero-left h2{font-size:1.4rem}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">SEVA</div>
+    <div>
+      <h1>Hospital Appointment</h1>
+      <div style="font-size:0.85rem;opacity:0.95">Tenali & Guntur </div>
+    </div>
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<section class="hero" aria-label="hero">
+  <div class="hero-card" role="region" aria-labelledby="hero-title">
+    <div class="hero-left">
+      <h2 id="hero-title">Find & Book Appointments in Tenali & Guntur</h2>
+      <p>Browse hospitals by city, filter by specialty, call directly or follow the website / directions links. After selecting a hospital, register or login to book an appointment.</p>
+      <div class="hero-actions">
+        <button class="btn" onclick="location.href='register.html'">Register & Book</button>
+        <button class="btn alt" onclick="location.href='login.html'">Login</button>
+      </div>
+    </div>
+   </section>
+
+<!-- filters -->
+<div class="filters" role="toolbar" aria-label="filters">
+  <div class="tabs" role="tablist" aria-label="city tabs">
+    <div class="tab active" data-city="all" onclick="setCity('all')">All Cities</div>
+    <div class="tab" data-city="Tenali" onclick="setCity('Tenali')">Tenali</div>
+    <div class="tab" data-city="Guntur" onclick="setCity('Guntur')">Guntur</div>
+  </div>
+
+  <div style="margin-left:12px;color:var(--muted);font-weight:700">Filter by</div>
+  <select class="select" id="specialtyFilter" onchange="applyFilters()">
+    <option value="">All Specialties</option>
+    <option>Multi-Speciality</option>
+    <option>Pediatrics</option>
+    <option>Cardiology</option>
+    <option>Ophthalmology</option>
+    <option>Orthopedics</option>
+    <option>Gynecology</option>
+    <option>ENT</option>
+    <option>Dental</option>
+    <option>Neonatal</option>
+  </select>
+
+  <div class="search" style="margin-left:auto">
+    <input id="searchInput" type="search" placeholder="Search hospital name..." oninput="applyFilters()" />
+  </div>
+</div>
+
+<!-- TENALI -->
+<section class="section" id="tenali-section" aria-labelledby="tenali-title">
+  <div class="container">
+    <div class="section-title">
+      <h3 id="tenali-title">Hospitals in Tenali</h3>
+          </div>
+
+    <div class="city-label">Tenali's Local hospitals & specialist centres</div>
+    <div class="city-intro" style="color:var(--muted);margin-bottom:12px">Click any hospital card to view call/website/directions actions.</div>
+
+    <div class="grid" id="hospitalGrid">
+      <!-- Each card has data-city and data-specialty for filtering -->
+      <!-- Tenali cards -->
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Health Hospitals</h4>
+        <div class="meta"><div class="badge">4.5</div><div>1.6K reviews</div></div>
+        <div class="spec">Multi-Speciality (Cardiology, Neuro, Urology, Orthopedics, Pediatrics)</div>
+        <div class="address">Prakasam Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918644226060">08644 226060</a></div>
+        <div class="actions">
+          <a class="link-btn" href="#" target="_blank" rel="noopener">Website</a>
+          <a class="link-btn" href="#" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Orthopedics">
+        <h4>Sri Chakra Super Speciality Hospital</h4>
+        <div class="meta"><div class="badge">4.8</div><div>85 reviews</div></div>
+        <div class="spec">Orthopedics, Gynecology, General Medicine</div>
+        <div class="address">D no.7-5-25, Lecturers colony / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918644228899">08644 228899</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Mythree Super Speciality Hospital</h4>
+        <div class="meta"><div class="badge">4.3</div><div>116 reviews</div></div>
+        <div class="spec">Multi-Speciality / General</div>
+        <div class="address">Nehru Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864425566">08644 25566</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Gynecology">
+        <h4>MAMATHA HOSPITAL</h4>
+        <div class="meta"><div class="badge">4.4</div><div>118 reviews</div></div>
+        <div class="spec">General & Lab Services; Obstetrics & Gynecology (inferred)</div>
+        <div class="address">NO.2-28-15/4 / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918644239999">08644 239999</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>TENALI HOSPITAL</h4>
+        <div class="meta"><div class="badge">4.8</div><div>4 reviews</div></div>
+        <div class="spec">Multi-Speciality / General</div>
+        <div class="address">7-6-2/1 / Open 24 hours</div>
+        <div class="note">Phone: —</div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>KIMS Hospital</h4>
+        <div class="meta"><div class="badge">4.0</div><div>121 reviews</div></div>
+        <div class="spec">Multi-Speciality (insurance-friendly)</div>
+        <div class="address">6JVW+CFX / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918622916357">08622 916357</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Pediatrics">
+        <h4>J.V.M Mother & Children's Hospital (NABH)</h4>
+        <div class="meta"><div class="badge">4.7</div><div>316 reviews</div></div>
+        <div class="spec">Pediatrics & Maternity (NABH Accredited)</div>
+        <div class="address">Nehru Rd / Closes 8:30 pm</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864422213">08644 22213</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Divi Hospitals</h4>
+        <div class="meta"><div class="badge">4.6</div><div>101 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Prakasam Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864422108">08644 22108</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Ophthalmology">
+        <h4>Sunayana Eye Hospital</h4>
+        <div class="meta"><div class="badge">4.8</div><div>192 reviews</div></div>
+        <div class="spec">Ophthalmology (Eye care)</div>
+        <div class="address">Tenali / Closes 7 pm</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864420522">08644 20522</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Pediatrics">
+        <h4>New Life Children Hospital, Tenali</h4>
+        <div class="meta"><div class="badge">4.8</div><div>447 reviews</div></div>
+        <div class="spec">Pediatrics / Children's hospital</div>
+        <div class="address">Door no 22-18-4, Pttabhi Road / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918979283848">08979 283848</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="General">
+        <h4>District Government Hospital, Tenali</h4>
+        <div class="meta"><div class="badge">3.3</div><div>87 reviews</div></div>
+        <div class="spec">Government General Hospital</div>
+        <div class="address">Plots, NTR Rd / Open 24 hours</div>
+        <div class="note">Public hospital, broad services.</div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Pediatrics">
+        <h4>PRAVEEN CHILDREN'S HOSPITAL</h4>
+        <div class="meta"><div class="badge">4.6</div><div>42 reviews</div></div>
+        <div class="spec">Pediatrics</div>
+        <div class="address">Above Bank of Baroda / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919912777747">09912 77747</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Kalary Hospital</h4>
+        <div class="meta"><div class="badge">4.1</div><div>34 reviews</div></div>
+        <div class="spec">Multi-Speciality / General</div>
+        <div class="address">6JPR+6HP / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864423444">08644 23444</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Padmavathi Hospitals</h4>
+        <div class="meta"><div class="badge">4.3</div><div>32 reviews</div></div>
+        <div class="spec">Multi-Speciality (OPD)</div>
+        <div class="address">Nandulapet / Closes 8 pm</div>
+        <div class="note">Phone: —</div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="General">
+        <h4>Vadlamudi Hospital</h4>
+        <div class="meta"><div class="badge">3.8</div><div>72 reviews</div></div>
+        <div class="spec">Multi-Speciality / General</div>
+        <div class="address">Vadlamudi area / Open 24 hours</div>
+        <div class="note">Phone: —</div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Cardiology">
+        <h4>AAROGYA HOSPITAL HEART & MULTISPECIALITY</h4>
+        <div class="meta"><div class="badge">5.0</div><div>15 reviews</div></div>
+        <div class="spec">Cardiology & Multi-Speciality</div>
+        <div class="address">ASN College Road / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864423000">08644 23000</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Cardiology">
+        <h4>V Cardiac and Multi Speciality Hospital</h4>
+        <div class="meta"><div class="badge">3.8</div><div>276 reviews</div></div>
+        <div class="spec">Cardiology & Multi-Speciality</div>
+        <div class="address">TB Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864420001">08644 20001</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Orthopedics">
+        <h4>Tejaswi Orthopaedic & Paediatric Hospital</h4>
+        <div class="meta"><div class="badge">4.4</div><div>42 reviews</div></div>
+        <div class="spec">Orthopedics & Pediatrics</div>
+        <div class="address">Gopal Reddy St / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+91864428877">08644 28877</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Aashritha Super Speciality Care</h4>
+        <div class="meta"><div class="badge">4.9</div><div>48 reviews</div></div>
+        <div class="spec">Neurology, Dermatology, Cardiology, Gastroenterology</div>
+        <div class="address">Opposite Bank of Baroda / Closes 8 pm</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919690799899">09690 799899</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Tenali" data-specialty="Multi-Speciality">
+        <h4>Sharadha Hospital</h4>
+        <div class="meta"><div class="badge">4.0</div><div>22 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Local / Closes 9 pm</div>
+        <div class="note">Phone: —</div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- GUNTUR -->
+<section class="section" id="guntur">
+  <div class="container">
+    <div class="section-title">
+      <h1> <b><center>Hospitals in Guntur</b></center></h1>
+
+         </div>
+
+    <div class="city-label">Guntur full directory</div>
+    <div class="city-intro" style="color:var(--muted);margin-bottom:12px">Click to call, visit website or get directions. </div>
+
+    <div class="grid">
+      <!-- Guntur cards -->
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Tulasi Multi Speciality Hospital</h4>
+        <div class="meta"><div class="badge">4.8</div><div>2K reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">5th Lane, GV Thota / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918632323235">0863 232 3235</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Sanjivi Hospitals</h4>
+        <div class="meta"><div class="badge">4.9</div><div>2.3K reviews</div></div>
+        <div class="spec">Multi-Speciality (Emergency, Diagnostics)</div>
+        <div class="address">4th Ln, Near Harihar Cinemas / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918680871234">0868 0871234</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Sri Balaji Hospitals</h4>
+        <div class="meta"><div class="badge">4.8</div><div>933 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Vadduri Vari St / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918632322355">0863 232 2355</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Sreshta Hospitals</h4>
+        <div class="meta"><div class="badge">4.9</div><div>2.2K reviews</div></div>
+        <div class="spec">Private Multi-Speciality</div>
+        <div class="address">JKC College Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918633525252">0863 352 5252</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="General & Super-Speciality">
+        <h4>Aster Ramesh Hospitals</h4>
+        <div class="meta"><div class="badge">4.8</div><div>23K reviews</div></div>
+        <div class="spec">General & Super-Speciality</div>
+        <div class="address">Collector Office Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918632377777">0863 237 7777</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>AADHUNIKA MULTISPECIALITY HOSPITAL</h4>
+        <div class="meta"><div class="badge">4.9</div><div>451 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Beside Sivalayam St / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919492121131">09492 121131</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Super-Speciality">
+        <h4>Narayana Superspeciality Hospital</h4>
+        <div class="meta"><div class="badge">4.9</div><div>205 reviews</div></div>
+        <div class="spec">Superspeciality (Cardiac, Neuro, Ortho)</div>
+        <div class="address">Old Club Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919542432277">09542 432277</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Sri Venkateswara Multi Speciality Hospital</h4>
+        <div class="meta"><div class="badge">4.8</div><div>421 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Old Club Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919393030309">09393 030309</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>KIMS-SIKHARA Hospitals</h4>
+        <div class="meta"><div class="badge">4.8</div><div>1.5K reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Mangalagiri Road / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+917699699499">07699 699499</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>MGR Multi Speciality Hospital</h4>
+        <div class="meta"><div class="badge">4.9</div><div>954 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Stambalagaruvu / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919160639900">09160 639900</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Yeluri Hospitals</h4>
+        <div class="meta"><div class="badge">4.9</div><div>1K reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Old Club Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919494408877">09494 408877</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Super-Speciality">
+        <h4>Citizen Super Speciality Hospital</h4>
+        <div class="meta"><div class="badge">4.7</div><div>360 reviews</div></div>
+        <div class="spec">Super-Speciality (surgical & emergency)</div>
+        <div class="address">Sanakkayala Factory Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+917794985555">07794 985555</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Coastal Care Hospital</h4>
+        <div class="meta"><div class="badge">4.6</div><div>439 reviews</div></div>
+        <div class="spec">Private Multi-Speciality</div>
+        <div class="address">8th Lane Old Club Rd Opp RTC Bus Stand / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919059588320">09059 588320</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Amrutha Hospitals</h4>
+        <div class="meta"><div class="badge">4.5</div><div>309 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Old Club Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918632210123">0863 221 0123</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Gold Hospital</h4>
+        <div class="meta"><div class="badge">4.9</div><div>501 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Old Club Rd / Closes 9 pm</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919392275000">09392 275000</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Lalitha Super Specialities Hospital</h4>
+        <div class="meta"><div class="badge">4.5</div><div>2.6K reviews</div></div>
+        <div class="spec">Multi-Speciality (large network)</div>
+        <div class="address">Kothapet Main Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+919490759378">09490 759378</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Vijayasree Multi Super Speciality Hospitals</h4>
+        <div class="meta"><div class="badge">4.9</div><div>441 reviews</div></div>
+        <div class="spec">Multi-Speciality / Super-Speciality</div>
+        <div class="address">Inner Ring Rd — Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+917799904858">07799 04858</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>Endolife Hospital</h4>
+        <div class="meta"><div class="badge">4.7</div><div>1.6K reviews</div></div>
+        <div class="spec">Multi-Speciality / Advanced care</div>
+        <div class="address">Old Club Rd / Closes 9 pm</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918632252000">0863 225 2000</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Multi-Speciality">
+        <h4>ANDHRA PRIME HOSPITALS</h4>
+        <div class="meta"><div class="badge">4.5</div><div>260 reviews</div></div>
+        <div class="spec">Multi-Speciality</div>
+        <div class="address">Station Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+917995467346">07995 467346</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+      <article class="card" data-city="Guntur" data-specialty="Specialized">
+        <h4>Life Hospital</h4>
+        <div class="meta"><div class="badge">4.3</div><div>541 reviews</div></div>
+        <div class="spec">Specialized hospital (various departments)</div>
+        <div class="address">Old Club Rd / Open 24 hours</div>
+        <div class="note">Phone: <a class="link-btn call" href="tel:+918632244277">0863 224 4277</a></div>
+        <div class="actions"><a class="link-btn" href="#" target="_blank">Website</a><a class="link-btn" href="#" target="_blank">Directions</a></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+   2025 Hospital Appointment System </footer>
+
+<script>
+  // Filtering & search logic
+  let currentCity = 'all';
+
+  function setCity(city){
+    currentCity = city;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.city === city));
+    applyFilters();
+  }
+
+  function applyFilters(){
+    const specialty = document.getElementById('specialtyFilter').value.trim().toLowerCase();
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+
+    document.querySelectorAll('.grid .card').forEach(card => {
+      const city = card.dataset.city || '';
+      const spec = (card.dataset.specialty || '').toLowerCase();
+      const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+
+      let visible = true;
+      if(currentCity !== 'all' && city.toLowerCase() !== currentCity.toLowerCase()) visible = false;
+      if(specialty && spec.indexOf(specialty.toLowerCase()) === -1 && name.indexOf(specialty.toLowerCase()) === -1) visible = false;
+      if(q && name.indexOf(q) === -1 && (card.querySelector('.address')?.textContent || '').toLowerCase().indexOf(q) === -1) visible = false;
+
+      card.style.display = visible ? '' : 'none';
+    });
+  }
+
+  // initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    setCity('all');
+  });
+</script>
+</body>
+</html>
